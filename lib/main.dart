@@ -13,7 +13,6 @@ void main() async {
   await Hive.initFlutter(appDocumentDir.path);
   Hive.registerAdapter(TodoAdapter());
   await Hive.openBox('settings');
-  WidgetsFlutterBinding.ensureInitialized();
 
   final hiveService = HiveService();
   await hiveService.init();

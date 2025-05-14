@@ -9,22 +9,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:todo_hive/main.dart';
+import 'package:todo_hive/models/todo.dart';
+import 'package:todo_hive/widgets/todo_tile.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('TodoTile displays title and handles toggle',
+      (WidgetTester tester) async {
+    bool toggled = false;
+    bool deleted = false;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final todo = Todo(title: 'Do homework', isDone: false);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TodoTile(
+            todo: todo,
+            onToggle: () {
+              toggled = true;
+            },
+            onDelete: () {
+              deleted = true;
+            },
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Do homework'), findsOneWidget);
+
+    await tester.tap(find.byType(Checkbox));
+    await tester.pumpAndSettle();
+
+    expect(toggled, isTrue);
+    expect(deleted, isFalse);
   });
 }
